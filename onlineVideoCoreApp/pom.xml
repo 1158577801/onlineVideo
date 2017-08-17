@@ -24,7 +24,7 @@
 			此处的 scope 值为 compile 仅为支持 IDEA 下启动项目
 			打 war 包时需要改成 provided，以免将一些无用的 jar 打进去
 		-->
-    	<scope>provided</scope>
+    	<scope>scope</scope>
     </dependency>
     <dependency>
     	<groupId>com.jfinal</groupId>
