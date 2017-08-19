@@ -13,6 +13,8 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
 
+import cn.com.onlineVideoCoreApp.controller.AppController;
+
 /**
  * 本 demo 仅表达最为粗浅的 jfinal 用法，更为有价值的实用的企业级用法
  * 详见 JFinal 俱乐部: http://jfinal.com/club
@@ -55,6 +57,7 @@ public class WebConfig extends JFinalConfig {
 	public void configRoute(Routes me) {
 		//me.add("/", IndexController.class, "/index");	// 第三个参数为该Controller的视图存放路径
 		//me.add("/blog", BlogController.class);			// 第三个参数省略时默认与第一个参数值相同，在此即为 "/blog"
+		me.add("/", AppController.class);
 	}
 	
 	public void configEngine(Engine me) {
