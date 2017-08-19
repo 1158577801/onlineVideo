@@ -1,5 +1,5 @@
 package cn.com.onlineVideoCoreApp.common;
 
-public class baseCommon {
+public class BaseCommon {
 
 }
