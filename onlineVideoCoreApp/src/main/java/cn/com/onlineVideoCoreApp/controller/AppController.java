@@ -1,12 +1,21 @@
 package cn.com.onlineVideoCoreApp.controller;
 
+import java.text.CollationKey;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+
+import org.apache.commons.collections.MapUtils;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.cn.wct.data.Base64Util;
+import com.cn.wct.data.MapSortUtil;
 import com.cn.wct.encrypt.SignUtil;
+import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.Record;
 
 import cn.com.onlineVideoCoreApp.base.AuthUtil;
@@ -50,6 +59,7 @@ public class AppController extends BaseController {
 			return;
 		}
 		try {
+			dataMap=Base64Util.decode(dataMap);
 			reqMap = JSON.parseObject(dataMap, new TypeReference<Map<String, Object>>() {});
 			
 
@@ -62,13 +72,23 @@ public class AppController extends BaseController {
 
 		BaseService baseService = BaseService.getInstance(serviceClass, this);
 		if (InvokeMethodEnum.getIsVerification(invokeMethod)) {
-			
+			String signature= getPara("signature");//参数签名
 			String tokenId = getPara("tokenId");// tokenId
+			if (StringUtils.isEmpty(signature)) {
+				renderJson("signature is null");
+				return;
+			}
 			if (StringUtils.isEmpty(tokenId)) {
 				renderJson("tokenId is null");
 				return;
 			}
-			Object user = getSessionAttr("user");
+			
+			if(!reqMap.isEmpty()) {
+				reqMap.put("tokenId", tokenId);
+				reqMap.put("timestamp", timestamp);
+				reqMap=MapSortUtil.sortMapByKey(reqMap);//排序key
+			}
+			/*	Object user = getSessionAttr("user");
 			if (null == user) {
 				renderJson("请重新登录");
 				return;
@@ -78,24 +98,21 @@ public class AppController extends BaseController {
 			if (!tokenId.equals(tid)) {
 				renderJson("error:tokenId is Inconsistent");
 				return;
-			}
-			AuthUtil.validateSignature("", timestamp, nonce, tokenId);
-			String sign = SignUtil.createSign(reqMap, true, tid);
-			if (!sign.equals(nonce)) {
+			}*/
+			
+			//AuthUtil.validateSignature(signature, timestamp, , tokenId);
+			String sign = SignUtil.createSign(reqMap, true, PropKit.get("token_private_key"));
+			if (!sign.equals(signature)) {
 				renderJson("validation failed");
 				return;
 			}
-
+			if(!AuthUtil.validateSignature(timestamp)) {
+				renderJson("session  Invalid");
+				return;
+			}
 		}
 		Object ob = baseService.INSTANCE_MAP.get(serviceClass).invokeMethod(reqMap);
-		System.out.println(getSessionAttr("user").toString());
 		renderJson(ob);
-	}
-	
-	public static void main(String[] args) {
-		String a=System.currentTimeMillis()+"";
-		System.out.println(AuthUtil.generateSignature(a, "1565434", "145555"));
-		System.out.println(AuthUtil.generateSignature(a, "565434", "145555"));
 	}
 
 }
