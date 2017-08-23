@@ -15,12 +15,7 @@
 	</properties>
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.36</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>com.cn.wct</groupId>
 			<artifactId>wct-base</artifactId>

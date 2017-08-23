@@ -1,100 +1,101 @@
 package cn.com.onlineVideoCoreApp.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.cn.wct.encrypt.Md5Util;
+import com.cn.wct.encrypt.SignUtil;
+import com.jfinal.plugin.activerecord.Record;
 
+import cn.com.onlineVideoCoreApp.base.AuthUtil;
 import cn.com.onlineVideoCoreApp.base.BaseController;
 import cn.com.onlineVideoCoreApp.base.BaseService;
 import cn.com.onlineVideoCoreApp.common.InvokeMethodEnum;
 
-public class AppController extends BaseController{
-	
+public class AppController extends BaseController {
+
 	public void doApp() {
-		
-		String invokeMethod=getPara("invokeMethod");
-		if(StringUtils.isEmpty(invokeMethod)){
-			renderJson("方法异常");
-			return ;
+
+		String invokeMethod = getPara("invokeMethod");
+		if (StringUtils.isEmpty(invokeMethod)) {
+			renderJson("invokeMethod is null");
+			return;
 		}
-		String userName=getPara("userName");
-		if(StringUtils.isEmpty(userName)){
-			renderJson("方法异常");
-			return ;
+		String userName = getPara("userName");
+		if (StringUtils.isEmpty(userName)) {
+			renderJson("userName is null");
+			return;
 		}
-		
-		Class<? extends BaseService> serviceClass=InvokeMethodEnum.getService(invokeMethod);
-		if(null==serviceClass) {
-			 renderJson("方法异常");
-			 return ;
+		String timestamp = getPara("timestamp");// 时间戳
+		if (StringUtils.isEmpty(timestamp)) {
+			renderJson("timestamp is null");
+			return;
 		}
-		Map<String, Object> reqMap =new HashMap<String, Object>();
-		BaseService baseService=BaseService.getInstance(serviceClass,this);
-		if(InvokeMethodEnum.getIsVerification(invokeMethod)) {
-			String signature=getPara("signature");//加密签名内容
-			String timestamp=getPara("timestamp");//时间戳
-			if(StringUtils.isEmpty(signature) || StringUtils.isEmpty(timestamp)) {
-				renderJson("signature and timestamp is null");
-				 return ;
-			}
-			if(!"4353545".equals(signature)) {
-				renderJson("signature不一致");
-				 return ;
-			}
+		String nonce = getPara("nonce");// 随机数
+		if (StringUtils.isEmpty(timestamp)) {
+			renderJson("nonce is null");
+			return;
+		}
+		Class<? extends BaseService> serviceClass = InvokeMethodEnum.getService(invokeMethod);
+		if (null == serviceClass) {
+			renderJson("serviceClass is error,class not found");
+			return;
+		}
+		Map<String, Object> reqMap = new HashMap<String, Object>();
+		String dataMap = getPara("dataMap");
+		if (StringUtils.isEmpty(dataMap)) {
+			renderJson("dataMap is null");
+			return;
+		}
+		try {
+			reqMap = JSON.parseObject(dataMap, new TypeReference<Map<String, Object>>() {});
 			
-			
-			String dataMap=getPara("dataMap");
-			if(StringUtils.isEmpty(dataMap)) {
-				renderJson("signature and timestamp is null");
-				return ;
-			}
-			try {
-				reqMap = JSON.parseObject(dataMap,new TypeReference<Map<String, Object>>(){} );
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				renderJson("json异常");
-				return ;
-			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			renderJson("error:json conversion anomaly");
+			return;
 		}
-		renderJson(baseService.INSTANCE_MAP.get(serviceClass).invokeMethod(reqMap));
+
+		BaseService baseService = BaseService.getInstance(serviceClass, this);
+		if (InvokeMethodEnum.getIsVerification(invokeMethod)) {
+			
+			String tokenId = getPara("tokenId");// tokenId
+			if (StringUtils.isEmpty(tokenId)) {
+				renderJson("tokenId is null");
+				return;
+			}
+			Object user = getSessionAttr("user");
+			if (null == user) {
+				renderJson("请重新登录");
+				return;
+			}
+			Record rc = (Record) user;
+			String tid = rc.getStr("tokenId");
+			if (!tokenId.equals(tid)) {
+				renderJson("error:tokenId is Inconsistent");
+				return;
+			}
+			AuthUtil.validateSignature("", timestamp, nonce, tokenId);
+			String sign = SignUtil.createSign(reqMap, true, tid);
+			if (!sign.equals(nonce)) {
+				renderJson("validation failed");
+				return;
+			}
+
+		}
+		Object ob = baseService.INSTANCE_MAP.get(serviceClass).invokeMethod(reqMap);
+		System.out.println(getSessionAttr("user").toString());
+		renderJson(ob);
 	}
 	
-	//签名实现
-	public static String createSign(Map<String, String> params, boolean encode)
-            throws UnsupportedEncodingException {
-        Set<String> keysSet = params.keySet();
-        Object[] keys = keysSet.toArray();
-        Arrays.sort(keys);
-        StringBuffer temp = new StringBuffer();
-        boolean first = true;
-        for (Object key : keys) {
-            if (first) {
-                first = false;
-            } else {
-                temp.append("&");
-            }
-            temp.append(key).append("=");
-            Object value = params.get(key);
-            String valueString = "";
-            if (null != value) {
-                valueString = String.valueOf(value);
-            }
-            if (encode) {
-                temp.append(URLEncoder.encode(valueString, "UTF-8"));
-            } else {
-                temp.append(valueString);
-            }
-        }
+	public static void main(String[] args) {
+		String a=System.currentTimeMillis()+"";
+		System.out.println(AuthUtil.generateSignature(a, "1565434", "145555"));
+		System.out.println(AuthUtil.generateSignature(a, "565434", "145555"));
+	}
 
-        return Md5Util.hmacSign(temp.toString(),"12345678").toUpperCase();
-    }
 }
