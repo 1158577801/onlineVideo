@@ -31,6 +31,8 @@ public class TestA {
 			Map<String,String> paramRes=(Map<String, String>) Json2JavaUtil.Json2Java(a, Map.class);
 			
 			
+			for(int i=0;i<20;i++) {
+				
 			
     		HttpClientObject s2=new HttpClientObject();
     		Map<String,String> param2 =new HashMap<String,String>();
@@ -53,7 +55,9 @@ public class TestA {
     		param2.put("dataMap",Base64Util.encoded(JSON.toJSONString(sigMap)));
 			String a2=s2.post("http://localhost:8080/onlineVideoWebApp/doApp", param2);
 			System.out.println("========2====="+a2);
-				
+			System.out.println("================================================================="+i);
+			Thread.sleep(5000);
+			}	
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

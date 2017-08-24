@@ -16,7 +16,6 @@ public class LoginService extends BaseService {
 		if (null != user) {
 			String md5Key = GenerateRandomUtil.getPswd(8, false);
 			user.set("tokenId", Md5Util.hmacSign(user.getStr("id") + user.getStr("userName"), md5Key).toUpperCase());
-			super.controller.setSessionAttr("user", user);
 			return user;
 		} else {
 			return super.errorResult("用户名与密码不一致");
