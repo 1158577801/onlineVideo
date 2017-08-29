@@ -5,12 +5,6 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
-        <dependent-module archiveName="onlineVideoCoreApp-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/onlineVideoCoreApp/onlineVideoCoreApp">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="wct-base-0.0.1-version.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/wct-base/wct-base">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="context-root" value="onlineVideoWebApp"/>
         <property name="java-output-path" value="/onlineVideoWebApp/target/classes"/>
     </wb-module>
