@@ -11,6 +11,7 @@ import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
+import com.jfinal.plugin.redis.RedisPlugin;
 import com.jfinal.template.Engine;
 
 import cn.com.onlineVideoCoreApp.controller.AppController;
@@ -78,6 +79,9 @@ public class WebConfig extends JFinalConfig {
 		// 所有映射在 MappingKit 中自动化搞定
 		mapping(arp);
 		me.add(arp);
+		
+		RedisPlugin userRedis=new RedisPlugin(PropKit.get("redis_cacheName"),PropKit.get("redis_host"));
+		me.add(userRedis);
 	}
 	public static void mapping(ActiveRecordPlugin arp) {
 		//arp.addMapping("blog", "id", Blog.class);
