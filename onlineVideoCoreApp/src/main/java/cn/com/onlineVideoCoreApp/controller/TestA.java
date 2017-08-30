@@ -4,64 +4,64 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cn.wct.http.Json2JavaUtil;
-
-import com.cn.wct.data.Base64Util;
+import com.cn.wct.data.GenerateRandomUtil;
+import com.cn.wct.data.MapSortUtil;
 import com.cn.wct.encrypt.SignUtil;
 import com.cn.wct.http.HttpClientObject;
+import com.cn.wct.http.Json2JavaUtil;
 
 
 public class TestA {
-	public static void main(String[] args) {
-    	//http://localhost:8080/onlineVideoWebApp/doApp?userName=admin&invokeMethod=login&dataMap={"userPwd":"242343434"}
-    	try {	
+	public static void main(String[] args) throws Exception {
+    	
     		
     		HttpClientObject s=new HttpClientObject();
-    		Map<String,String> param =new HashMap<String,String>();
+    		Map<String,Object> param =new HashMap<String,Object>();
     		param.put("userName", "admin");
-    		param.put("userName2", "我安康你");
+    		param.put("nonce", GenerateRandomUtil.getPswd(5, false));
     		param.put("invokeMethod", "login");
     		param.put("timestamp", System.currentTimeMillis()+"");
+    		
     		JSONObject json=new JSONObject();
     		json.put("userPwd", "242343434");
     		
-    		param.put("dataMap",Base64Util.encoded(JSON.toJSONString(json)));
+    		param.put("dataMap",json);
 			String a=s.post("http://localhost:8080/onlineVideoWebApp/doApp", param);
-			System.out.println("========1====="+a);
+
 			Map<String,String> paramRes=(Map<String, String>) Json2JavaUtil.Json2Java(a, Map.class);
+			if(paramRes.isEmpty() || "error".equals(paramRes.get("status"))) {
+				return ;
+			}
 			
-			
-			for(int i=0;i<20;i++) {
+			for(int i=0;i<100;i++) {
 				
 			
     		HttpClientObject s2=new HttpClientObject();
-    		Map<String,String> param2 =new HashMap<String,String>();
+    		Map<String,Object> param2 =new HashMap<String,Object>();
     		param2.put("userName", "admin");
     		param2.put("invokeMethod", "log");
     		param2.put("timestamp", param.get("timestamp"));
     		param2.put("tokenId", paramRes.get("tokenId"));
+    		param2.put("nonce", GenerateRandomUtil.getPswd(5, false));
     		
     		
     		
     		Map<String, Object> sigMap=new HashMap<String, Object>();
     		sigMap.put("age", "14");
     		sigMap.put("timestamp", param2.get("timestamp"));
-    		sigMap.put("tokenId", param2.get("tokenId"));
+    		sigMap.put("nonce", param2.get("nonce"));
+    		sigMap.put("userName", param2.get("userName"));
     		
-    		
-    		String sign = SignUtil.createSign(sigMap, true, "d10811f4eb0fe8746b8626d3bd6bad9ffc6924e5");
+    		sigMap = MapSortUtil.sortMapByKey(sigMap);// 排序key
+    		String sign = SignUtil.createSign(sigMap, true, paramRes.get("tokenId"));
     		param2.put("signature", sign);
-    		
-    		param2.put("dataMap",Base64Util.encoded(JSON.toJSONString(sigMap)));
+    		param2.put("dataMap",JSON.toJSONString(sigMap));
 			String a2=s2.post("http://localhost:8080/onlineVideoWebApp/doApp", param2);
-			System.out.println("========2====="+a2);
-			System.out.println("================================================================="+i);
-			Thread.sleep(5000);
+			System.out.println(a2+"================================================================="+i);
+			
+			Thread.sleep(10000);
 			}	
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
     
 	}
 }

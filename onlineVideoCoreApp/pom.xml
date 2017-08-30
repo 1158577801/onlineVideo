@@ -15,35 +15,25 @@
 	</properties>
 
 	<dependencies>
-		
 		<dependency>
 			<groupId>com.cn.wct</groupId>
 			<artifactId>wct-base</artifactId>
 			<version>0.0.1-version</version>
 		</dependency>
+
 		<dependency>
-			<groupId>com.jfinal</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>8.1.8</version>
-			<!-- 此处的 scope 值为 compile 仅为支持 IDEA 下启动项目 打 war 包时需要改成 provided，以免将一些无用的 
-				jar 打进去 -->
-			<scope>scope</scope>
+			<groupId>de.ruedigermoeller</groupId>
+			<artifactId>fst</artifactId>
+			<version>2.43</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.jfinal</groupId>
 			<artifactId>jfinal</artifactId>
 			<version>3.2</version>
 		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.20</version>
-		</dependency>
+
+
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>

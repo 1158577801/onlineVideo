@@ -1,11 +1,10 @@
 package cn.com.onlineVideoCoreApp.base;
 
 import com.cn.wct.encrypt.Sha1Util;
-import com.jfinal.kit.PropKit;
 
 public class AuthUtil {
 	// 时间戳时间设置不能超过某个时间，防止传输过程中signature窃取后的连续攻击，这个值也不能设置太小，因为可能存在网络缓慢或者不稳定
-	private static int time_out = 60*1000*PropKit.getInt("token_time_out");
+	private static int time_out = 60*1000*2;
 
 	/**
 	 * 时间戳
