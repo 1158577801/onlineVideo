@@ -24,11 +24,7 @@
 
 	<build>
 		<finalName>onlineVideoWebApp</finalName>
-		<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
-		<outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/classes</outputDirectory>
-		<testOutputDirectory>${project.basedir}/src/main/webapp/WEB-INF/classes</testOutputDirectory>
-
+		
 		<plugins>
 			<!-- Compiler 插件, 设定JDK版本 -->
 			<plugin>
