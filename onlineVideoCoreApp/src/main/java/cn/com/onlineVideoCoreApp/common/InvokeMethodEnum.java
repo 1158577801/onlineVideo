@@ -1,12 +1,12 @@
 package cn.com.onlineVideoCoreApp.common;
 
 import cn.com.onlineVideoCoreApp.base.BaseService;
-import cn.com.onlineVideoCoreApp.service.LogService;
-import cn.com.onlineVideoCoreApp.service.LoginService;
+import cn.com.onlineVideoCoreApp.service.*;
 
 public enum InvokeMethodEnum {
-	ONE("login", LoginService.class,false,"登录"), 
-	ONE2("log", LogService.class,"日志");
+	code1("login", LoginService.class,false,"登录"), 
+	code2("register", RegisterService.class,false,"注册"),
+	code3("log", LogService.class,"日志");
 
 	
 	
