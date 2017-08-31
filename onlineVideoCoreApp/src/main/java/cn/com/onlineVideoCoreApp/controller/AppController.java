@@ -9,7 +9,6 @@ import com.cn.wct.encrypt.SignUtil;
 import com.cn.wct.http.Json2JavaUtil;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.redis.Redis;
-
 import cn.com.onlineVideoCoreApp.base.BaseController;
 import cn.com.onlineVideoCoreApp.base.BaseService;
 import cn.com.onlineVideoCoreApp.common.InvokeMethodEnum;
@@ -81,9 +80,7 @@ public class AppController extends BaseController {
 					return;
 				}
 			}
-			// end
-			Object ob = baseService.INSTANCE_MAP.get(serviceClass).invokeMethod(reqMap);
-			renderJson(ob);
+			renderJson(baseService.INSTANCE_MAP.get(serviceClass).invokeMethod(reqMap));
 		} catch (Exception e) {
 			e.printStackTrace();
 			errorResultJSON("error:system error");

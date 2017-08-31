@@ -57,9 +57,7 @@ public abstract class BaseService implements AppInvoke{
 		}
 		return data;
 	}
-	public Record getUserInfo() {
-		return controller.getSessionAttr("user");
-	}
+
 	/**
 	 * 成功操作返回
 	 * @param message 返回提示
@@ -83,18 +81,18 @@ public abstract class BaseService implements AppInvoke{
 	 * @param true 成功  flase 失败
 	 * @return
 	 */
-	public void operateMessage(boolean bl){
+	public Result operateMessage(boolean bl){
 		if(bl){
-			controller.renderJson(new Result());
+			return new Result();
 		}else{
-			controller.renderJson(new Result("操作失败"));
+			return new Result("操作失败");
 		}
 	}
-	public void operateMessage(int bl){
+	public Result operateMessage(int bl){
 		if(bl>0){
-			controller.renderJson(new Result());
+			return new Result();
 		}else{
-			controller.renderJson(new Result("操作失败"));
+			return new Result("操作失败");
 		}
 	}
 }
