@@ -3,10 +3,6 @@ package onlineVideoCoreApp;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
@@ -19,7 +15,7 @@ import com.cn.wct.http.Json2JavaUtil;
 
 public class videoTest {
 	private static final HttpClientObject httpClientObject = new HttpClientObject();
-	private static final String url="http://localhost:8080/onlineVideoWebApp/doApp";
+	private static final String url="http://172.168.1.106:8080/onlineVideoWebApp/doApp";
 	@Test
 	public void LoginService() {
 		login();
@@ -29,13 +25,13 @@ public class videoTest {
 		// login
 		
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("userName", "wct");
+		param.put("userName", "2381766143@qq.com");
 		param.put("nonce", GenerateRandomUtil.getPswd(5, false));
 		param.put("invokeMethod", "login");
 		param.put("timestamp", System.currentTimeMillis() + "");
 
 		JSONObject json = new JSONObject();
-		json.put("userPwd", "1232343");
+		json.put("userPwd", "2381766143");
 
 		param.put("dataMap", json);
 		try {
@@ -57,7 +53,7 @@ public class videoTest {
 	public void logService() throws Exception {
 		Map<String, String> paramRes = login();
 		Map<String, Object> paramRegister = new HashMap<String, Object>();
-		paramRegister.put("userName", "admin");
+		paramRegister.put("userName", "2381766143@qq.com");
 		paramRegister.put("invokeMethod", "log");
 		paramRegister.put("timestamp", System.currentTimeMillis() + "");
 		paramRegister.put("tokenId", paramRes.get("tokenId"));
@@ -79,13 +75,13 @@ public class videoTest {
 	@Test
 	public void registerService() throws Exception {
 		Map<String, Object> paramRegister = new HashMap<String, Object>();
-		paramRegister.put("userName", "wct2");
+		paramRegister.put("userName", "2381766143@qq.com");
 		paramRegister.put("invokeMethod", "register");
 		paramRegister.put("timestamp", System.currentTimeMillis() + "");
 		paramRegister.put("nonce", GenerateRandomUtil.getPswd(5, false));
 
 			Map<String, Object> dataMap = new HashMap<String, Object>();
-			dataMap.put("userPwd", "1232343");
+			dataMap.put("userPwd", "2381766143");
 			dataMap.put("accountName", "小花花");
 			dataMap.put("sex", "1");
 			dataMap.put("email", "2381766143@qq.com");
